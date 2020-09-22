@@ -36,13 +36,13 @@ function getQuantyElement(heightElement){
 function startGame(){
     start.classList.add('head');
     gameArea.innerHTML = '';
-    car.style.bottom = '10px';
+    car.style.bottom = '110px';
     car.style.top = 'auto';
 
-    for(let i = 0; i < (getQuantyElement(50) + 1); i++){
+    for(let i = 0; i < getQuantyElement(50) + 1; i++){
         const line = document.createElement('div');
         line.classList.add('line');
-        line.y = i * 100;
+        line.y = 100 * i;
         line.style.top =  line.y + 'px';
         // console.log(line.y);
         gameArea.appendChild(line);
