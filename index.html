@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeedForJs</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="score"></div>
-    <div class="game">
-        <div class="start">Чтобы начать игру, нажми сюда!</div>
-        <div class="gameArea"></div>
+    <div class="player-block">
+        <audio class="audio-player" src="audio/hello.mp3"></audio>
     </div>
     
-
+    <div class="game">
+        <div class="game-block">
+            <div class="score"></div>
+            <div class="start">Чтобы начать игру, нажми сюда!</div>
+            <div class="button">
+                <div class="level easy">Легкий</div>
+                <div class="level middle">Средний</div>
+                <div class="level complicated">Сложный</div>
+            </div>
+        </div>
+        
+        
+        <div class="gameArea"></div>
+    </div>
+    <div class="window"></div>
     
+     
 
 
     <script src="main.js"></script>    

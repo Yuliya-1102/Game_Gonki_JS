@@ -4,7 +4,9 @@ const score = document.querySelector('.score'),
       gameArea = document.querySelector('.gameArea'),
       car = document.createElement('div');
       car.classList.add('car');
-
+      const windows = document.querySelector('.window');
+      const autoArrey = ['enemy', 'enemy2'];
+      const scoreArrey = [];  
 start.addEventListener('click', startGame);
 document.addEventListener('keydown', startRun);
 document.addEventListener('keyup', stopRun);
@@ -22,36 +24,40 @@ const setting = {
     speed: 3,
     traffic: 3
 }
-
+// console.log(document.documentElement.clientHeight);
+// console.log(getQuantyElement(100 * setting.traffic));
+// console.log(getQuantyElement(50));
 function getQuantyElement(heightElement){
-    return document.documentElement.clientHeight / heightElement + 1;
+    return document.documentElement.clientHeight / heightElement;
+    
 }
-
+// console.log(getQuantyElement(50));
 
 function startGame(){
     start.classList.add('head');
     gameArea.innerHTML = '';
     car.style.bottom = '10px';
     car.style.top = 'auto';
-    for(let i = 0; i < getQuantyElement(50); i++){
+
+    for(let i = 0; i < (getQuantyElement(50) + 1); i++){
         const line = document.createElement('div');
         line.classList.add('line');
-        line.style.top = (i*100) + 'px';
         line.y = i * 100;
+        line.style.top =  line.y + 'px';
         // console.log(line.y);
         gameArea.appendChild(line);
     }
 
-    console.log(getQuantyElement(100 * setting.traffic));
+    // console.log(getQuantyElement(100 * setting.traffic));
 
     for(let i = 0; i < getQuantyElement(100 * setting.traffic); i++){
         const enemy = document.createElement('div');
         enemy.classList.add('enemy');
         enemy.y = -100 * setting.traffic * (i + 1);
+        // console.log(enemy.y);
         enemy.style.top = enemy.y + 'px';
-        enemy.style.background = 'transparent url("./image/enemy2.png") center / cover no-repeat';
+        enemy.style.background = `transparent url("./image/${autoArrey[Math.floor(Math.random()*autoArrey.length)]}.png") center / cover no-repeat`;
         enemy.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + 'px';
-        console.log(enemy.y);
         gameArea.appendChild(enemy);
     }
         setting.score = 0;
@@ -60,16 +66,20 @@ function startGame(){
         car.style.left = (gameArea.offsetWidth/2 - car.offsetWidth/2) + 'px';
         setting.x = car.offsetLeft;
         setting.y = car.offsetTop;
+
         requestAnimationFrame(playGame);
 }
 
 function playGame(){
         setting.score += setting.speed;
-        console.log(setting.score);
-        score.innerHTML = 'SCORE<br>' + setting.score;
+        // console.log(setting.score);
+        score.innerHTML = 'SCORE: ' + setting.score;
+        
     if(setting.start){
+        windows.classList.remove('active'); 
         moveRoad();
         moveEnemy();
+        loadTrack();
         requestAnimationFrame(playGame); //рекурсия - цикличное выполнение одного действия
         if(keys.ArrowLeft && setting.x > 0){
             setting.x -= setting.speed;
@@ -86,7 +96,20 @@ function playGame(){
         car.style.left = setting.x + 'px';
         car.style.top = setting.y + 'px';
     }
-   
+    else{
+        +localStorage.setItem('current', setting.score);
+        let currentNum = +setting.score;
+        // console.log(currentNum);
+        scoreArrey.push(currentNum);
+        let maxNum = Math.max.apply(null, scoreArrey);
+    //    console.log(scoreArrey);
+        if(currentNum === maxNum && currentNum !== scoreArrey[0]){
+            windows.classList.add('active');
+            windows.innerHTML = 'Вы побили свой предыдущий рекорд: ' + localStorage.getItem('max');
+        }
+        +localStorage.setItem('max', maxNum);
+        
+    }
   
 }
 function startRun(event){
@@ -106,6 +129,7 @@ function moveRoad(){
         item.style.top = item.y + 'px';
         if(item.y >= document.documentElement.clientHeight){
             item.y = -100;
+            item.style.top = item.y + 'px';
         }
     })
 }
@@ -125,7 +149,7 @@ function moveEnemy(){
                 console.warn('ДТП')
 
                 start.classList.remove('head');
-                start.style.top = 65 + 'px';
+                start.style.top = 20 + 'px';
         }
 
         item.y += setting.speed / 2;
@@ -138,5 +162,43 @@ function moveEnemy(){
     })
 }
 
+// Музыкальное сопровождение
+const audioPlayer = document.querySelector('.audio-player');
+function loadTrack(){
+    audioPlayer.play();
+    if(setting.start == false){
+        audioPlayer.pause();
+    }
+}
+
+// Сложноть уровни
+const button = document.querySelector('.button');
+const level = document.querySelectorAll('.level');
+
+const selectButton = (elem) => {
+    level.forEach(item => item.classList.remove('active'));
+    elem.classList.add('active');
+}
+// console.log(button);
+button.addEventListener('click', event => {
+    const target = event.target;
+    const parent = target.closest('.level');
+   
+    console.log(target);
+  
+    if(target.className === 'level complicated'){
+       setting.traffic = +1;
+       console.log(setting);
+    }
+    if(target.className === 'level middle'){
+        setting.traffic = +2;
+        console.log(setting);
+     }
+     if(target.className === 'level easy'){
+        setting.traffic = +3;
+        console.log(setting);
+     } 
+      selectButton(parent);
+})
 
 
